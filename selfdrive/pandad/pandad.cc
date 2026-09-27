@@ -339,6 +339,7 @@ void process_peripheral_state(Panda *panda, PubMaster *pm, bool no_fan_control, 
   static bool driver_view = false;
   static bool not_car = false;
   static bool not_car_checked = false;
+  static bool ir_disabled = params.getBool("DisableIRLeds");
 
   // TODO: can we merge these?
   static FirstOrderFilter integ_lines_filter(0, 30.0, 0.05);
@@ -396,6 +397,14 @@ void process_peripheral_state(Panda *panda, PubMaster *pm, bool no_fan_control, 
       }
     }
     if (not_car) {
+      ir_pwr = 0;
+    }
+
+    // turn off IR leds if disabled by user (e.g. they blind auto-dimming mirrors)
+    if (sm.frame % 20 == 0) {
+      ir_disabled = params.getBool("DisableIRLeds");
+    }
+    if (ir_disabled) {
       ir_pwr = 0;
     }
 

@@ -11,7 +11,7 @@ from openpilot.system.hardware import HARDWARE
 from openpilot.system.ui.lib.application import gui_app
 from openpilot.system.ui.lib.multilang import tr
 from openpilot.system.ui.sunnypilot.widgets.list_view import option_item_sp, multiple_button_item_sp, button_item_sp, \
-  dual_button_item_sp, Spacer
+  dual_button_item_sp, toggle_item_sp, Spacer
 from openpilot.system.ui.widgets import DialogResult
 from openpilot.system.ui.widgets.button import ButtonStyle
 from openpilot.system.ui.widgets.confirm_dialog import alert_dialog, ConfirmDialog
@@ -78,6 +78,15 @@ class DeviceLayoutSP(DeviceLayout):
       inline=True,
     )
 
+    self._disable_ir_leds = toggle_item_sp(
+      title=lambda: tr("Disable IR LEDs"),
+      description=lambda: tr("Turn off the driver camera's infrared LEDs, which can stop auto-dimming mirrors from dimming. " +
+                             "Warning: driver monitoring cannot see the driver in the dark without them, " +
+                             "so sunnypilot will alert and disengage at night."),
+      param="DisableIRLeds",
+      initial_state=ui_state.params.get_bool("DisableIRLeds"),
+    )
+
     self._quiet_mode_and_dcam = dual_button_item_sp(
       left_text=lambda: tr("Quiet Mode"),
       right_text=lambda: tr("Driver Camera Preview"),
@@ -122,6 +131,8 @@ class DeviceLayoutSP(DeviceLayout):
       self._device_wake_mode,
       LineSeparator(),
       self._max_time_offroad,
+      LineSeparator(),
+      self._disable_ir_leds,
       LineSeparator(height=10),
       self._quiet_mode_and_dcam,
       self._reg_and_training,
